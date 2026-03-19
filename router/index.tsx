@@ -14,7 +14,7 @@ const routes = [
     path: "/",
     element: <Layout />,
     children: [
-      { index: true, element: <Home /> },
+      { index: true, element: <Home />, meta: '' },
       { path: "cart", element: <Cart /> },
       { path: "login", element: <Login /> },
       { path: "profile", element: <Profile /> },
