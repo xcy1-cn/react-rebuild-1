@@ -39,6 +39,11 @@ export default function BuyPopup({
   }
 
   async function handleConfirm() {
+    const token = localStorage.getItem('token')
+    if(!token) {
+      window.alert("请先登录");
+      return;
+    }
     if (!detail?.goods_id) {
       window.alert("商品信息异常，无法加入购物车");
       return;

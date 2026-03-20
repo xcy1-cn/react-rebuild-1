@@ -110,6 +110,8 @@ export default function MyPage() {
     if (!ok) return;
 
     clearUserState();
+    // clear token
+    localStorage.setItem('token', '')
   };
 
   return (
