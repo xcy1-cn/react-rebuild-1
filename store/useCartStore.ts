@@ -1,118 +1,163 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { CartItem } from "../types/cart";
+import {
+  getCartAdd,
+  getCartList,
+  getCartUpdate,
+  getCartClear,
+  getCartTotal,
+} from "@/api/cart";
+import type { CartItem, ReqCartAdd, ReqCartUpdate } from "@/types/cart";
 
-type AddCartPayload = Omit<CartItem, "goodsNum" | "selected">;
 type CartStore = {
-  cartItems: CartItem[];
+  cartList: CartItem[];
+  cartTotal: number;
+  loading: boolean;
+  adding: boolean;
+  error: string | null;
 
-  addToCart: (item: AddCartPayload) => void;
-  removeFromCart: (goodsId: number) => void;
-  updateGoodsNum: (goodsId: number, goodsNum: number) => void;
-  toggleSelected: (goodsId: number) => void;
-  toggleAllSelected: (selected: boolean) => void;
-  clearCart: () => void;
-  seedCart: () => void;
+  fetchCartList: () => Promise<void>;
+  fetchCartTotal: () => Promise<void>;
+  addToCart: (payload: ReqCartAdd) => Promise<boolean>;
+  updateGoodsNum: (
+    goodsId: string | number,
+    goodsNum: number,
+  ) => Promise<boolean>;
+  clearCartItems: (cartIds: Array<string | number>) => Promise<boolean>;
+  clearCartState: () => void;
 };
 
-export const useCartStore = create<CartStore>()(
-  persist(
-    (set, get) => ({
-      cartItems: [],
+export const useCartStore = create<CartStore>((set) => ({
+  cartList: [],
+  cartTotal: 0,
+  loading: false,
+  adding: false,
+  error: null,
 
-      seedCart: () => {
-        set({
-          cartItems: [
-            {
-              goodsId: 1,
-              goodsName: "苹果 15 Pro Max",
-              price: 8999,
-              goodsNum: 1,
-              selected: true,
-              image: "https://via.placeholder.com/80",
-              goodsSkuId: "0",
-            },
-            {
-              goodsId: 2,
-              goodsName: "华为 Mate 60",
-              price: 6999,
-              goodsNum: 2,
-              selected: false,
-              image: "https://via.placeholder.com/80",
-              goodsSkuId: "0",
-            },
-          ],
-        });
-      },
+  fetchCartList: async () => {
+    try {
+      set({ loading: true, error: null });
+      const res = await getCartList();
 
-      addToCart: (item) => {
-        const current = get().cartItems;
-        const existing = current.find((i) => i.goodsId === item.goodsId);
+      set({
+        cartList: res.list || [],
+        loading: false,
+      });
+    } catch (error) {
+      console.log("fetchCartList error:", error);
+      set({
+        loading: false,
+        error: "获取购物车列表失败",
+      });
+    }
+  },
 
-        if (existing) {
-          set({
-            cartItems: current.map((i) =>
-              i.goodsId === item.goodsId
-                ? { ...i, goodsNum: i.goodsNum + 1 }
-                : i,
-            ),
-          });
-          return;
-        }
+  fetchCartTotal: async () => {
+    try {
+      const res = await getCartTotal();
 
-        set({
-          cartItems: [
-            ...current,
-            {
-              ...item,
-              goodsNum: 1,
-              selected: true,
-            },
-          ],
-        });
-      },
+      set({
+        cartTotal: res.total || 0,
+      });
+    } catch (error) {
+      console.log("fetchCartTotal error:", error);
+      set({
+        error: "获取购物车数量失败",
+      });
+    }
+  },
 
-      removeFromCart: (goodsId) => {
-        set((state) => ({
-          cartItems: state.cartItems.filter((item) => item.goodsId !== goodsId),
-        }));
-      },
+  addToCart: async (payload) => {
+    try {
+      set({
+        adding: true,
+        error: null,
+      });
 
-      updateGoodsNum: (goodsId, goodsNum) => {
-        set((state) => ({
-          cartItems: state.cartItems.map((item) =>
-            item.goodsId === goodsId
-              ? { ...item, goodsNum: goodsNum < 1 ? 1 : goodsNum }
-              : item,
-          ),
-        }));
-      },
+      await getCartAdd(payload);
 
-      toggleSelected: (goodsId) => {
-        set((state) => ({
-          cartItems: state.cartItems.map((item) =>
-            item.goodsId === goodsId
-              ? { ...item, selected: !item.selected }
-              : item,
-          ),
-        }));
-      },
+      const totalRes = await getCartTotal();
 
-      toggleAllSelected: (selected) => {
-        set((state) => ({
-          cartItems: state.cartItems.map((item) => ({
-            ...item,
-            selected,
-          })),
-        }));
-      },
+      set({
+        cartTotal: totalRes.total || 0,
+        adding: false,
+      });
 
-      clearCart: () => {
-        set({ cartItems: [] });
-      },
-    }),
-    {
-      name: "cart-storage",
-    },
-  ),
-);
+      return true;
+    } catch (error) {
+      console.log("addToCart error:", error);
+      set({
+        adding: false,
+        error: "加入购物车失败",
+      });
+      return false;
+    }
+  },
+
+  updateGoodsNum: async (goodsId, goodsNum) => {
+    try {
+      set({ error: null });
+
+      const payload: ReqCartUpdate = {
+        goodsId,
+        goodsNum,
+        goodsSkuId: '0',
+      };
+
+      await getCartUpdate(payload);
+
+      const [listRes, totalRes] = await Promise.all([
+        getCartList(),
+        getCartTotal(),
+      ]);
+
+      set({
+        cartList: listRes.list || [],
+        cartTotal: totalRes.total || 0,
+      });
+
+      return true;
+    } catch (error) {
+      console.log("updateGoodsNum error:", error);
+      set({
+        error: "更新购物车商品数量失败",
+      });
+      return false;
+    }
+  },
+
+  clearCartItems: async (cartIds) => {
+    try {
+      set({ error: null });
+
+      await getCartClear(cartIds);
+
+      const [listRes, totalRes] = await Promise.all([
+        getCartList(),
+        getCartTotal(),
+      ]);
+
+      set({
+        cartList: listRes.list || [],
+        cartTotal: totalRes.total || 0,
+      });
+
+      return true;
+    } catch (error) {
+      console.log("clearCartItems error:", error);
+      set({
+        error: "删除购物车商品失败",
+      });
+      return false;
+    }
+  },
+
+  clearCartState: () => {
+    set({
+      cartList: [],
+      cartTotal: 0,
+      loading: false,
+      adding: false,
+      error: null,
+    });
+  },
+}));

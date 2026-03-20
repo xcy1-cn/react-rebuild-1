@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useCartStore } from "@/store/useCartStore";
+import type { CartItem } from "@/types/cart";
 
 import CartHeader from "@/components/cart/CartHeader";
 import CartEmpty from "@/components/cart/CartEmpty";
@@ -23,43 +24,59 @@ export default function CartPage() {
   const updateGoodsNum = useCartStore((state) => state.updateGoodsNum);
   const clearCartItems = useCartStore((state) => state.clearCartItems);
 
-  // true: 编辑/结算模式
+  // localStorage 登录态
+  const [token, setToken] = useState<string | null>(null);
+
+  // true: 编辑 / 结算模式
   // false: 删除模式
   const [edit, setEdit] = useState(true);
 
   // 当前勾选的购物车项 id
-  const [checkedIds, setCheckedIds] = useState<Array<number | string>>([]);
+  const [checkedIds, setCheckedIds] = useState<Array<string | number>>([]);
 
+  // 首次读取 token
   useEffect(() => {
+    const currentToken = localStorage.getItem("token");
+    setToken(currentToken);
+  }, []);
+
+  // 有 token 才请求购物车数据
+  useEffect(() => {
+    if (!token) return;
+
     const init = async () => {
       await Promise.all([fetchCartList(), fetchCartTotal()]);
     };
 
     init();
-  }, [fetchCartList, fetchCartTotal]);
+  }, [token, fetchCartList, fetchCartTotal]);
 
-  // 当 cartList 变化时，清理已经失效的选中项
+  // 当 cartList 更新时，过滤掉已失效的勾选项
   useEffect(() => {
     setCheckedIds((prev) =>
       prev.filter((id) => cartList.some((item) => item.id === id)),
     );
   }, [cartList]);
 
-  const isEmpty = !loading && cartList.length === 0;
+  // 未登录
+  const notLogin = !token;
+
+  // 已登录但购物车为空
+  const isEmpty = !!token && !loading && cartList.length === 0;
 
   const isCheckAll = useMemo(() => {
     return cartList.length > 0 && checkedIds.length === cartList.length;
   }, [cartList, checkedIds]);
 
   const totalPrice = useMemo(() => {
-    return cartList.reduce((sum, item) => {
+    return cartList.reduce((sum: number, item: CartItem) => {
       if (!checkedIds.includes(item.id)) return sum;
       return sum + item.goods_num * item.goods.goods_price_max;
     }, 0);
   }, [cartList, checkedIds]);
 
   const checkedCount = useMemo(() => {
-    return cartList.reduce((sum, item) => {
+    return cartList.reduce((sum: number, item: CartItem) => {
       if (!checkedIds.includes(item.id)) return sum;
       return sum + item.goods_num;
     }, 0);
@@ -69,7 +86,7 @@ export default function CartPage() {
     setEdit((prev) => !prev);
   };
 
-  const handleToggleItem = (id: number | string) => {
+  const handleToggleItem = (id: string | number) => {
     setCheckedIds((prev) => {
       if (prev.includes(id)) {
         return prev.filter((itemId) => itemId !== id);
@@ -104,7 +121,7 @@ export default function CartPage() {
   };
 
   const handleChangeGoodsNum = async (
-    goodsId: number | string,
+    goodsId: string | number,
     nextGoodsNum: number,
   ) => {
     if (nextGoodsNum < 1) return;
@@ -116,12 +133,14 @@ export default function CartPage() {
       <CartHeader
         total={cartTotal}
         edit={edit}
-        showAction={!isEmpty}
+        showAction={!notLogin && !isEmpty}
         onToggleEdit={handleToggleEdit}
       />
 
-      {isEmpty ? (
-        <CartEmpty />
+      {notLogin ? (
+        <CartEmpty type="not-login" />
+      ) : isEmpty ? (
+        <CartEmpty type="empty" />
       ) : (
         <>
           <CartList
@@ -145,7 +164,7 @@ export default function CartPage() {
         </>
       )}
 
-      {!!error && <div className="cart-page__error">{error}</div>}
+      {error && <div className="cart-page__error">{error}</div>}
     </div>
   );
 }

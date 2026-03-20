@@ -77,7 +77,7 @@ export default function LoginPage() {
       
       setMobileStore(mobile);
       setUser(res);
-      localStorage.setItem('token', JSON.stringify(res.token))
+      localStorage.setItem('token', res.token)
 
       // const [balanceRes, countsRes] = await Promise.all([
       //   getUserBalance(res.token),

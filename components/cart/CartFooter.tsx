@@ -4,6 +4,7 @@ type Props = {
   totalPrice: number;
   checkedCount: number;
   disabled: boolean;
+
   onToggleAll: () => void;
   onCheckout: () => void;
   onDelete: () => void;
@@ -21,34 +22,25 @@ export default function CartFooter({
 }: Props) {
   return (
     <div className="cart-footer">
-      <div className="cart-footer__left">
-        <label>
-          <input type="checkbox" checked={isCheckAll} onChange={onToggleAll} />
-          全选
-        </label>
+      {/* 全选 */}
+      <div className="cart-footer-left">
+        <input type="checkbox" checked={isCheckAll} onChange={onToggleAll} />
+        <span>全选</span>
       </div>
 
-      <div className="cart-footer__right">
-        <span>合计：</span>
-        <span className="red">
-          <span style={{ fontSize: 18 }}>￥</span>
-          {totalPrice}.00
+      {/* 右侧 */}
+      <div className="cart-footer-right">
+        <span>
+          合计：
+          <b>￥{totalPrice}</b>
         </span>
 
         {edit ? (
-          <button
-            className="cart-footer__btn"
-            disabled={disabled}
-            onClick={onCheckout}
-          >
-            {totalPrice !== 0 ? `去结算 (${checkedCount})` : "去结算"}
+          <button disabled={disabled} onClick={onCheckout}>
+            去结算 ({checkedCount})
           </button>
         ) : (
-          <button
-            className="cart-footer__btn"
-            disabled={disabled}
-            onClick={onDelete}
-          >
+          <button disabled={disabled} onClick={onDelete}>
             删除
           </button>
         )}

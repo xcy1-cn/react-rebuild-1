@@ -19,6 +19,7 @@ export default function BuyPopup({
   const navigate = useNavigate();
 
   const addToCart = useCartStore((state) => state.addToCart);
+  const fetchCartTotal = useCartStore((state) => state.fetchCartTotal);
   const adding = useCartStore((state) => state.adding);
 
   useEffect(() => {
@@ -38,8 +39,13 @@ export default function BuyPopup({
   }
 
   async function handleConfirm() {
+    if (!detail?.goods_id) {
+      window.alert("商品信息异常，无法加入购物车");
+      return;
+    }
+
     const payload = {
-      goodsId: detail?.goods_id,
+      goodsId: detail.goods_id,
       goodsNum: count,
       goodsSkuId: detail?.skuList?.[0]?.goods_sku_id,
     };
@@ -48,13 +54,17 @@ export default function BuyPopup({
       const success = await addToCart(payload);
 
       if (success) {
+        await fetchCartTotal();
+        window.alert("已加入购物车");
         onClose();
+      } else {
+        window.alert("加入购物车失败");
       }
       return;
     }
 
     navigate(
-      `/checkout/order?mode=buyNow&type=detail&goodsId=${detail?.goods_id}&goodsNum=${count}&goodsSkuId=${detail?.skuList?.[0]?.goods_sku_id || ""}&goodsName=${encodeURIComponent(detail?.goods_name || "")}&goodsImage=${encodeURIComponent(detail?.goods_image || "")}&goodsPrice=${detail?.goods_price_max || ""}`,
+      `/checkout/order?mode=buyNow&type=detail&goodsId=${detail.goods_id}&goodsNum=${count}&goodsSkuId=${detail?.skuList?.[0]?.goods_sku_id || ""}&goodsName=${encodeURIComponent(detail?.goods_name || "")}&goodsImage=${encodeURIComponent(detail?.goods_image || "")}&goodsPrice=${detail?.goods_price_max || ""}`,
     );
 
     onClose();

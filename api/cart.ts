@@ -12,20 +12,20 @@ import { request } from "@/utils/request";
 // 添加商品到购物车
 export const getCartAdd = (data: ReqCartAdd) =>
   request<RepCartAdd>("cart/add", "post", {
-    ...data,
+    ...data
   });
 
 // 获取购物车商品列表
 export const getCartList = () => request<RepCartList>("cart/list", "get");
 
-// 更新购物车商品
+// 更新购物车商品数量
 export const getCartUpdate = (data: ReqCartUpdate) =>
   request<RepCartUpdate>("cart/update", "post", {
     ...data,
   });
 
 // 删除购物车商品
-export const getCartClear = (cartIds: string | number[]) =>
+export const getCartClear = (cartIds: Array<string | number>) =>
   request<RepCartClear>("cart/clear", "post", {
     cartIds,
   });
