@@ -1,65 +1,73 @@
-import type { CartItem as CartItemType } from "../../types/cart";
-import { useCartStore } from "../../store/useCartStore";
-import React from "react";
+import { memo } from "react";
+import { Link } from "react-router-dom";
 
-interface Props {
-  item: CartItemType;
-  isEditing: boolean;
-}
-
-const CartItem = ({ item, isEditing }: Props) => {
-  const toggleSelected = useCartStore((s) => s.toggleSelected);
-  const updateGoodsNum = useCartStore((s) => s.updateGoodsNum);
-  const removeFromCart = useCartStore((s) => s.removeFromCart);
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        gap: "12px",
-        padding: "12px 0",
-        borderBottom: "1px solid #eee",
-        alignItems: "center",
-      }}
-    >
-      <input
-        type="checkbox"
-        checked={item.selected}
-        onChange={() => toggleSelected(item.goodsId)}
-      />
-
-      <img
-        src={item.image}
-        alt={item.goodsName}
-        width={80}
-        height={80}
-        style={{ objectFit: "cover" }}
-      />
-
-      <div style={{ flex: 1 }}>
-        <div>{item.goodsName}</div>
-        <div>¥ {item.price}</div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <button
-            onClick={() => updateGoodsNum(item.goodsId, item.goodsNum - 1)}
-          >
-            -
-          </button>
-          <span>{item.goodsNum}</span>
-          <button
-            onClick={() => updateGoodsNum(item.goodsId, item.goodsNum + 1)}
-          >
-            +
-          </button>
-        </div>
-      </div>
-
-      {isEditing && (
-        <button onClick={() => removeFromCart(item.goodsId)}>删除</button>
-      )}
-    </div>
-  );
+type CartItemType = {
+  id: number | string;
+  goods_id: number | string;
+  goods_num: number;
+  goods: {
+    goods_name: string;
+    goods_image: string;
+    goods_price_max: number;
+    stock_total: number;
+  };
 };
 
-export default React.memo(CartItem);
+type Props = {
+  item: CartItemType;
+  checked: boolean;
+  onToggleItem: (id: number | string) => void;
+  onPlus: (goodsId: number | string) => void;
+  onMinus: (goodsId: number | string) => void;
+};
+
+function CartItem({ item, checked, onToggleItem, onPlus, onMinus }: Props) {
+  return (
+    <div className="cart-item">
+      <div className="cart-item__check">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={() => onToggleItem(item.id)}
+        />
+      </div>
+
+      <div className="cart-item__image">
+        <Link to={`/good/detail?goodsId=${item.goods_id}`}>
+          <img src={item.goods.goods_image} alt={item.goods.goods_name} />
+        </Link>
+      </div>
+
+      <div className="cart-item__info">
+        <Link to={`/good/detail?goodsId=${item.goods_id}`}>
+          <h3>{item.goods.goods_name}</h3>
+        </Link>
+
+        <div className="cart-item__bottom">
+          <span className="red">
+            <span style={{ fontSize: 18 }}>￥</span>
+            {item.goods.goods_price_max}
+          </span>
+
+          <div className="cart-stepper">
+            <button
+              onClick={() => onMinus(item.goods_id)}
+              disabled={item.goods_num <= 1}
+            >
+              -
+            </button>
+            <span>{item.goods_num}</span>
+            <button
+              onClick={() => onPlus(item.goods_id)}
+              disabled={item.goods_num >= item.goods.stock_total}
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default memo(CartItem);

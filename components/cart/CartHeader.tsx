@@ -1,17 +1,37 @@
-interface Props {
-  totalCount: number;
-  isEditing: boolean;
-  onToggleEditing: () => void;
-}
-
-const CartHeader = ({ totalCount, isEditing, onToggleEditing }: Props) => {
-  return (
-    <div>
-      <h2>购物车</h2>
-      <div>共 {totalCount} 件商品</div>
-      <button onClick={onToggleEditing}>{isEditing ? "完成" : "编辑"}</button>
-    </div>
-  );
+type Props = {
+  totalNum: number;
+  edit: boolean;
+  showAction: boolean;
+  onToggleEdit: () => void;
 };
 
-export default CartHeader;
+export default function CartHeader({
+  totalNum,
+  edit,
+  showAction,
+  onToggleEdit,
+}: Props) {
+  return (
+    <div className="cart-header">
+      <div className="cart-header__title">购物车</div>
+
+      {showAction && (
+        <div className="cart-header__toolbar">
+          <span>
+            共<span className="red">{totalNum}</span>件商品
+          </span>
+
+          {edit ? (
+            <span className="cart-header__action" onClick={onToggleEdit}>
+              编辑
+            </span>
+          ) : (
+            <span className="cart-header__action red" onClick={onToggleEdit}>
+              完成
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

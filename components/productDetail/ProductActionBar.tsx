@@ -15,7 +15,7 @@ export default function ProductActionBar({
   return (
     <div className="goodDetail-actionBar">
       <div className="action-bar">
-        <Link className="action-bar-icon" to="/home">
+        <Link className="action-bar-icon" to="/">
           首页
         </Link>
 
