@@ -1,0 +1,76 @@
+// 全局变量
+:root {
+  --cp-primary: #ff3800;
+  --cp-plain: #eaf8f6;
+  --cp-orange: #fca21c;
+  --cp-text1: #121826;
+  --cp-text2: #3c3e42;
+  --cp-text3: #6f6f6f;
+  --cp-tag: #848484;
+  --cp-dark: #979797;
+  --cp-tip: rgb(195, 195, 197);
+  --cp-disable: #d9dbde;
+  --cp-line: #ededed;
+  --cp-bg: #f6f7f9;
+  --cp-price: #eb5757;
+  --zhi-hui-my-color: #c59a46;
+  --zhi-hui-home-title: #c21401;
+  --zhi-hui-home-search: #f1f1f1;
+  --zhi-hui-my-bgc: #fafafa;
+  --zhi-hui-font-color1: rgb(97, 97, 97);
+  --zhi-hui-border-color: rgba(0, 0, 0, 0.05);
+  --zhi-hui-wallet-font: #303133;
+  --zhi-hui-wallet-gray: #cec1c1;
+  // 覆盖vant主体色
+  --van-primary-color: var(--cp-primary);
+  // 单元格上下间距
+  --van-cell-vertical-padding: 14px;
+  // 复选框大小
+  --van-checkbox-size: 14px;
+  // 默认按钮文字大小
+  --van-button-normal-font-size: 16px;
+
+  // nav
+  --van-nav-bar-height: 44px;
+  --van-nav-bar-title-font-size: var(--zh-font-size);
+  --van-nav-bar-icon-color: var(--cp-text1);
+  // cate select item active-color
+  --van-tree-select-item-active-color: var(#fa2209);
+}
+
+// 局部变量
+// .footer {
+//   --footer--color: green
+// }
+
+// a {
+//   color: var(--main-color)
+// }
+
+// 全局样式
+body {
+  font-size: 14px;
+  color: var(--cp-text1);
+  background-color: #fafafa;
+}
+a {
+  color: var(--cp-text2);
+  margin-bottom: 5px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+// router-lazy-loading
+#nprogress .bar {
+  background-color: var(--cp-primary) !important;
+}
