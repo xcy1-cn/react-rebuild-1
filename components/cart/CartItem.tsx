@@ -1,8 +1,8 @@
-// import type { CartItem as CartItemType } from "@/types/cart";
-
 import { useCartStore } from "@/store/useCartStore";
+import { memo } from "react";
 
 type CartId = string | number;
+
 type Props = {
   id: CartId;
   checked: boolean;
@@ -10,31 +10,34 @@ type Props = {
   onChangeGoodsNum: (goodsId: string | number, num: number) => void;
 };
 
-export default function CartItem({ id, checked, onToggleItem, onChangeGoodsNum }: Props) {
-
+ function CartItem({
+  id,
+  checked,
+  onToggleItem,
+  onChangeGoodsNum,
+}: Props) {
+  console.log('render cart item:', id);
+  
   const item = useCartStore((state) => state.cartItemsMap[id]);
 
   if (!item) return null;
+
   return (
     <div className="cart-item">
-      {/* checkbox */}
       <input
         type="checkbox"
         checked={checked}
         onChange={() => onToggleItem(id)}
       />
 
-      {/* image */}
       <img src={item.goods.goods_image} alt="" className="cart-item-img" />
 
-      {/* info */}
       <div className="cart-item-info">
         <h3>{item.goods.goods_name}</h3>
 
         <div className="cart-item-bottom">
           <span className="price">￥{item.goods.goods_price_max}</span>
 
-          {/* stepper */}
           <div className="stepper">
             <button
               onClick={() =>
@@ -59,3 +62,5 @@ export default function CartItem({ id, checked, onToggleItem, onChangeGoodsNum }
     </div>
   );
 }
+
+export default memo(CartItem);

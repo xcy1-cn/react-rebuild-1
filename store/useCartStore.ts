@@ -44,7 +44,20 @@ function normalizeCartList(list: CartItem[]) {
   };
 }
 
-export const useCartStore = create<CartStore>((set) => ({
+/**
+ * 通过 goodsId 找到对应的 cartId
+ * 当前 cartItemsMap 是按 cart item 的 id 建立索引的
+ * 但 updateGoodsNum 组件层传进来的是 goodsId
+ */
+function findCartIdByGoodsId(
+  cartIds: CartId[],
+  cartItemsMap: Record<CartId, CartItem>,
+  goodsId: string | number,
+): CartId | undefined {
+  return cartIds.find((cartId) => cartItemsMap[cartId]?.goods_id === goodsId);
+}
+
+export const useCartStore = create<CartStore>((set, get) => ({
   cartIds: [],
   cartItemsMap: {},
   cartTotal: 0,
@@ -116,10 +129,58 @@ export const useCartStore = create<CartStore>((set) => ({
     }
   },
 
+  /**
+   * 高性能版本：
+   * 1. 先在本地只更新当前这一项 goods_num
+   * 2. 再请求后端
+   * 3. 失败则回滚
+   * 4. 成功后只同步 cartTotal，不重新拉整个 cartList
+   */
   updateGoodsNum: async (goodsId, goodsNum) => {
-    try {
-      set({ error: null });
+    const state = get();
+    const { cartIds, cartItemsMap, cartTotal } = state;
 
+    const targetCartId = findCartIdByGoodsId(cartIds, cartItemsMap, goodsId);
+
+    if (targetCartId === undefined) {
+      set({
+        error: "未找到对应的购物车商品",
+      });
+      return false;
+    }
+
+    const oldItem = cartItemsMap[targetCartId];
+    if (!oldItem) {
+      set({
+        error: "购物车商品数据不存在",
+      });
+      return false;
+    }
+
+    if (goodsNum < 1) return false;
+    if (oldItem.goods_num === goodsNum) return true;
+
+    const prevGoodsNum = oldItem.goods_num;
+    const diff = goodsNum - prevGoodsNum;
+
+    // 先做本地局部更新：只替换当前这一项的引用
+    set((currentState) => ({
+      error: null,
+      cartItemsMap: {
+        ...currentState.cartItemsMap,
+        [targetCartId]: {
+          ...currentState.cartItemsMap[targetCartId],
+          goods_num: goodsNum,
+        },
+      },
+      /**
+       * 如果你的 cartTotal 表示“购物车商品总件数”，这里这样更新是合理的
+       * 如果你的后端 total 表示“商品种类数”，则不要在这里加 diff
+       */
+      cartTotal: currentState.cartTotal + diff,
+    }));
+
+    try {
       const payload: ReqCartUpdate = {
         goodsId,
         goodsNum,
@@ -128,26 +189,30 @@ export const useCartStore = create<CartStore>((set) => ({
 
       await getCartUpdate(payload);
 
-      const [listRes, totalRes] = await Promise.all([
-        getCartList(),
-        getCartTotal(),
-      ]);
-
-      const list = listRes.list || [];
-      const { cartIds, cartItemsMap } = normalizeCartList(list);
-
-      set({
-        cartIds,
-        cartItemsMap,
-        cartTotal: totalRes.total || 0,
-      });
+      // 成功后只同步总数，不再拉整个购物车列表
+      try {
+        const totalRes = await getCartTotal();
+        set({
+          cartTotal: totalRes.total || 0,
+        });
+      } catch (error) {
+        console.log("fetchCartTotal after updateGoodsNum error:", error);
+      }
 
       return true;
     } catch (error) {
       console.log("updateGoodsNum error:", error);
-      set({
+
+      // 失败回滚：只回滚当前这一项和 cartTotal
+      set((currentState) => ({
         error: "更新购物车商品数量失败",
-      });
+        cartItemsMap: {
+          ...currentState.cartItemsMap,
+          [targetCartId]: oldItem,
+        },
+        cartTotal,
+      }));
+
       return false;
     }
   },

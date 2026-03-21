@@ -1,0 +1,268 @@
+.ai-recommend {
+  margin: 16px 0;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+
+  &__header {
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+  }
+
+  &__desc {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  &__quick-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  &__quick-item {
+    padding: 8px 12px;
+    border: 1px solid #e5e6eb;
+    border-radius: 999px;
+    background: #f7f8fa;
+    font-size: 13px;
+    color: #444;
+    cursor: pointer;
+  }
+
+  &__textarea {
+    width: 100%;
+    min-height: 96px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 14px;
+    line-height: 1.6;
+    box-sizing: border-box;
+    outline: none;
+
+    &:focus {
+      border-color: #666;
+    }
+  }
+
+  &__button {
+    margin-top: 12px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #222;
+    color: #fff;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__error {
+    margin-top: 12px;
+    color: #d93025;
+    font-size: 14px;
+  }
+
+  &__empty,
+  &__loading {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #f7f8fa;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  &__result {
+    margin-top: 16px;
+    padding: 12px;
+    background: #f7f8fa;
+    border-radius: 8px;
+  }
+
+  &__result-title {
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: #333;
+  }
+
+  &__result-content {
+    white-space: pre-wrap;
+    line-height: 1.8;
+    color: #444;
+    font-size: 14px;
+  }
+}
+
+.ai-recommend {
+  &__actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  &__button--secondary {
+    background: #f3f4f6;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+
+  &__tips {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #fff7e6;
+    color: #9a6700;
+    font-size: 14px;
+  }
+}
+
+.ai-recommend {
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__card {
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+  }
+
+  &__card-label {
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #888;
+  }
+
+  &__card-value {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+
+  &__reason-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  &__reason-item {
+    margin-bottom: 6px;
+    color: #333;
+    line-height: 1.8;
+    font-size: 14px;
+  }
+}
+
+.ai-recommend {
+  &__cursor {
+    display: inline-block;
+    margin-left: 2px;
+    font-weight: 600;
+    animation: aiCursorBlink 1s step-start infinite;
+  }
+}
+
+@keyframes aiCursorBlink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.ai-recommend {
+  &__message-list {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__message {
+    padding: 12px;
+    border-radius: 10px;
+    line-height: 1.8;
+    font-size: 14px;
+  }
+
+  &__message--user {
+    align-self: flex-end;
+    background: #222;
+    color: #fff;
+    max-width: 80%;
+  }
+
+  &__message--assistant {
+    align-self: stretch;
+    background: #f7f8fa;
+    color: #333;
+  }
+
+  &__message-role {
+    margin-bottom: 6px;
+    font-size: 12px;
+    opacity: 0.7;
+  }
+
+  &__message-content {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.ai-recommend {
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__card {
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+  }
+
+  &__card-label {
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #888;
+  }
+
+  &__card-value {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+
+  &__reason-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  &__reason-item {
+    margin-bottom: 6px;
+    color: #333;
+    line-height: 1.8;
+    font-size: 14px;
+  }
+}

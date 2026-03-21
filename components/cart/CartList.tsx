@@ -1,14 +1,11 @@
-// import type { CartItem as CartItemType } from "@/types/cart";
 import CartItem from "@/components/cart/CartItem";
 
 type CartId = string | number;
 
 type Props = {
-  // cartList: CartItemType[];
   cartIds: CartId[];
   checkedIds: Array<string | number>;
   loading: boolean;
-
   onToggleItem: (id: string | number) => void;
   onChangeGoodsNum: (goodsId: string | number, num: number) => void;
 };
@@ -20,7 +17,6 @@ export default function CartList({
   onToggleItem,
   onChangeGoodsNum,
 }: Props) {
-
   if (loading) {
     return <div className="cart-loading">加载中...</div>;
   }
