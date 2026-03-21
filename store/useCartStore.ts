@@ -8,8 +8,11 @@ import {
 } from "@/api/cart";
 import type { CartItem, ReqCartAdd, ReqCartUpdate } from "@/types/cart";
 
+type CartId = string | number;
+
 type CartStore = {
-  cartList: CartItem[];
+  cartIds: CartId[];
+  cartItemsMap: Record<CartId, CartItem>;
   cartTotal: number;
   loading: boolean;
   adding: boolean;
@@ -22,12 +25,28 @@ type CartStore = {
     goodsId: string | number,
     goodsNum: number,
   ) => Promise<boolean>;
-  clearCartItems: (cartIds: Array<string | number>) => Promise<boolean>;
+  clearCartItems: (cartIds: CartId[]) => Promise<boolean>;
   clearCartState: () => void;
 };
 
+function normalizeCartList(list: CartItem[]) {
+  const cartIds: CartId[] = [];
+  const cartItemsMap: Record<CartId, CartItem> = {};
+
+  list.forEach((item) => {
+    cartIds.push(item.id);
+    cartItemsMap[item.id] = item;
+  });
+
+  return {
+    cartIds,
+    cartItemsMap,
+  };
+}
+
 export const useCartStore = create<CartStore>((set) => ({
-  cartList: [],
+  cartIds: [],
+  cartItemsMap: {},
   cartTotal: 0,
   loading: false,
   adding: false,
@@ -36,10 +55,14 @@ export const useCartStore = create<CartStore>((set) => ({
   fetchCartList: async () => {
     try {
       set({ loading: true, error: null });
+
       const res = await getCartList();
+      const list = res.list || [];
+      const { cartIds, cartItemsMap } = normalizeCartList(list);
 
       set({
-        cartList: res.list || [],
+        cartIds,
+        cartItemsMap,
         loading: false,
       });
     } catch (error) {
@@ -100,7 +123,7 @@ export const useCartStore = create<CartStore>((set) => ({
       const payload: ReqCartUpdate = {
         goodsId,
         goodsNum,
-        goodsSkuId: '0',
+        goodsSkuId: "0",
       };
 
       await getCartUpdate(payload);
@@ -110,8 +133,12 @@ export const useCartStore = create<CartStore>((set) => ({
         getCartTotal(),
       ]);
 
+      const list = listRes.list || [];
+      const { cartIds, cartItemsMap } = normalizeCartList(list);
+
       set({
-        cartList: listRes.list || [],
+        cartIds,
+        cartItemsMap,
         cartTotal: totalRes.total || 0,
       });
 
@@ -136,8 +163,12 @@ export const useCartStore = create<CartStore>((set) => ({
         getCartTotal(),
       ]);
 
+      const list = listRes.list || [];
+      const { cartIds: nextCartIds, cartItemsMap } = normalizeCartList(list);
+
       set({
-        cartList: listRes.list || [],
+        cartIds: nextCartIds,
+        cartItemsMap,
         cartTotal: totalRes.total || 0,
       });
 
@@ -153,7 +184,8 @@ export const useCartStore = create<CartStore>((set) => ({
 
   clearCartState: () => {
     set({
-      cartList: [],
+      cartIds: [],
+      cartItemsMap: {},
       cartTotal: 0,
       loading: false,
       adding: false,

@@ -1,7 +1,11 @@
-import type { CartItem } from "@/types/cart";
+// import type { CartItem as CartItemType } from "@/types/cart";
+import CartItem from "@/components/cart/CartItem";
+
+type CartId = string | number;
 
 type Props = {
-  cartList: CartItem[];
+  // cartList: CartItemType[];
+  cartIds: CartId[];
   checkedIds: Array<string | number>;
   loading: boolean;
 
@@ -10,67 +14,30 @@ type Props = {
 };
 
 export default function CartList({
-  cartList,
+  cartIds,
   checkedIds,
   loading,
   onToggleItem,
   onChangeGoodsNum,
 }: Props) {
+
   if (loading) {
     return <div className="cart-loading">加载中...</div>;
   }
 
   return (
     <div className="cart-list">
-      {cartList.map((item) => {
-        const checked = checkedIds.includes(item.id);
+      {cartIds.map((id) => {
+        const checked = checkedIds.includes(id);
 
         return (
-          <div className="cart-item" key={item.id}>
-            {/* checkbox */}
-            <input
-              type="checkbox"
-              checked={checked}
-              onChange={() => onToggleItem(item.id)}
-            />
-
-            {/* image */}
-            <img
-              src={item.goods.goods_image}
-              alt=""
-              className="cart-item-img"
-            />
-
-            {/* info */}
-            <div className="cart-item-info">
-              <h3>{item.goods.goods_name}</h3>
-
-              <div className="cart-item-bottom">
-                <span className="price">￥{item.goods.goods_price_max}</span>
-
-                {/* stepper */}
-                <div className="stepper">
-                  <button
-                    onClick={() =>
-                      onChangeGoodsNum(item.goods_id, item.goods_num - 1)
-                    }
-                  >
-                    -
-                  </button>
-
-                  <span>{item.goods_num}</span>
-
-                  <button
-                    onClick={() =>
-                      onChangeGoodsNum(item.goods_id, item.goods_num + 1)
-                    }
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CartItem
+            key={id}
+            id={id}
+            checked={checked}
+            onToggleItem={onToggleItem}
+            onChangeGoodsNum={onChangeGoodsNum}
+          />
         );
       })}
     </div>

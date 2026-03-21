@@ -14,7 +14,16 @@ import "./cart.scss";
 export default function CartPage() {
   const navigate = useNavigate();
 
-  const cartList = useCartStore((state) => state.cartList);
+  // 优化拆分
+  // const cartList = useCartStore((state) => state.cartList);
+  // 新的拆分
+  const cartIds = useCartStore((state) => state.cartIds);
+  const cartItemsMap = useCartStore((state) => state.cartItemsMap);
+  const cartList = useMemo(() => {
+    return cartIds.map((id) => cartItemsMap[id]).filter(Boolean);
+  }, [cartIds, cartItemsMap]);
+
+  // --------------------------
   const cartTotal = useCartStore((state) => state.cartTotal);
   const loading = useCartStore((state) => state.loading);
   const error = useCartStore((state) => state.error);
@@ -144,7 +153,7 @@ export default function CartPage() {
       ) : (
         <>
           <CartList
-            cartList={cartList}
+            cartIds={cartIds}
             checkedIds={checkedIds}
             loading={loading}
             onToggleItem={handleToggleItem}
