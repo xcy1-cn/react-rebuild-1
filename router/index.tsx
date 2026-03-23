@@ -8,6 +8,7 @@ import Profile from "../pages/Profile/index";
 import ProductDetail from "../pages/ProductDetail/index";
 import Category from "../pages/Category/index";
 import Search from "../pages/Search/index";
+import PythonAPI from "@/components/python/pythonAPI";
 
 const routes = [
   {
@@ -21,6 +22,7 @@ const routes = [
       { path: "good/detail/", element: <ProductDetail /> },
       { path: "category", element: <Category /> },
       { path: "search", element: <Search /> },
+      { path: "/address", element: <PythonAPI /> },
       {
         path: "*",
         element: <div>404 Not Found</div>,
