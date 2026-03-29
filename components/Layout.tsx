@@ -24,7 +24,7 @@ const Layout = () => {
           <Link to="/category">
             <div className="icon">
               <AppstoreOutlined />
-              分类
+              AI推荐
             </div>
           </Link>
           <Link to="/cart">

@@ -1,0 +1,83 @@
+.ai-review-summary-card {
+  margin: 12px 10px;
+  padding: 14px 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 6%);
+  box-sizing: border-box;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #222;
+  }
+
+  &__badge {
+    min-width: 32px;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: #eef3ff;
+    color: #4f6bff;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  &__block + &__block {
+    margin-top: 12px;
+  }
+
+  &__label {
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+  }
+
+  &__text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #222;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f3f7ff;
+    color: #3d5afe;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  &__tag--weak {
+    background: #fff4f4;
+    color: #d94b4b;
+  }
+
+  &__status {
+    font-size: 14px;
+    color: #666;
+  }
+
+  &__status--error {
+    color: #d94b4b;
+  }
+}

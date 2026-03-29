@@ -8,7 +8,7 @@ const instance = axios.create({
   baseURL: "https://smart-shop.itheima.net/index.php?s=/api/",
   timeout: 10000,
 });
-
+ 
 /**
  * 🔥 请求拦截器
  */

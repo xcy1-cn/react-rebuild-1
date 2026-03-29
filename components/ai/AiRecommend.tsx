@@ -212,148 +212,307 @@ export default function AiRecommend() {
     localStorage.removeItem(AI_RECOMMEND_HISTORY_KEY);
   };
 
+  // return (
+  //   <div className="ai-recommend">
+  //     <div className="ai-recommend__header">
+  //       <h2 className="ai-recommend__title">AI 选购助手</h2>
+  //       <p className="ai-recommend__desc">
+  //         告诉我你的预算和需求，我会边分析边给出推荐
+  //       </p>
+  //     </div>
+
+  //     <div className="ai-recommend__quick-list">
+  //       {quickQuestions.map((item) => (
+  //         <button
+  //           key={item}
+  //           className="ai-recommend__quick-item"
+  //           onClick={() => handleClickQuickQuestion(item)}
+  //           disabled={loading}
+  //         >
+  //           {item}
+  //         </button>
+  //       ))}
+  //     </div>
+
+  //     <textarea
+  //       className="ai-recommend__textarea"
+  //       value={query}
+  //       onChange={(e) => setQuery(e.target.value)}
+  //       placeholder="例如：我预算3000，想买拍照好的手机"
+  //       rows={4}
+  //     />
+
+  //     <div className="ai-recommend__actions">
+  //       <button
+  //         className="ai-recommend__button"
+  //         onClick={() => handleAskAI()}
+  //         disabled={loading}
+  //       >
+  //         {loading ? "分析中..." : "开始推荐"}
+  //       </button>
+
+  //       {loading ? (
+  //         <button
+  //           className="ai-recommend__button ai-recommend__button--secondary"
+  //           onClick={handleStop}
+  //         >
+  //           停止生成
+  //         </button>
+  //       ) : messages.length > 0 ? (
+  //         <button
+  //           className="ai-recommend__button ai-recommend__button--secondary"
+  //           onClick={handleRegenerate}
+  //         >
+  //           重新生成
+  //         </button>
+  //       ) : null}
+
+  //       {messages.length > 0 ? (
+  //         <button
+  //           className="ai-recommend__button ai-recommend__button--secondary"
+  //           onClick={handleClearMessages}
+  //         >
+  //           清空会话
+  //         </button>
+  //       ) : null}
+  //     </div>
+
+  //     {error ? <div className="ai-recommend__error">{error}</div> : null}
+
+  //     {isStopped && !loading ? (
+  //       <div className="ai-recommend__tips">已停止生成，可继续重新生成。</div>
+  //     ) : null}
+
+  //     {!loading && !error && messages.length === 0 ? (
+  //       <div className="ai-recommend__empty">
+  //         你可以输入预算、用途、品牌偏好等信息，例如“预算4000，偏向拍照和轻薄”
+  //       </div>
+  //     ) : null}
+
+  //     {messages.length > 0 ? (
+  //       <div className="ai-recommend__message-list">
+  //         {messages.map((item) => {
+  //           const isLastAssistantMessage =
+  //             item.role === "assistant" && item.id === lastMessageId;
+
+  //           const shouldRenderAsCard =
+  //             isLastAssistantMessage && !loading && parsedLastAssistantMessage;
+
+  //           return (
+  //             <div
+  //               key={item.id}
+  //               className={`ai-recommend__message ai-recommend__message--${item.role}`}
+  //             >
+  //               <div className="ai-recommend__message-role">
+  //                 {item.role === "user" ? "我" : "AI"}
+  //               </div>
+
+  //               <div className="ai-recommend__message-content">
+  //                 {shouldRenderAsCard ? (
+  //                   <div className="ai-recommend__cards">
+  //                     <div className="ai-recommend__card">
+  //                       <div className="ai-recommend__card-label">推荐商品</div>
+  //                       <div className="ai-recommend__card-value">
+  //                         {parsedLastAssistantMessage.product}
+  //                       </div>
+  //                     </div>
+
+  //                     <div className="ai-recommend__card">
+  //                       <div className="ai-recommend__card-label">推荐理由</div>
+  //                       <ul className="ai-recommend__reason-list">
+  //                         {parsedLastAssistantMessage.reasons.map((reason) => (
+  //                           <li
+  //                             key={reason}
+  //                             className="ai-recommend__reason-item"
+  //                           >
+  //                             {reason}
+  //                           </li>
+  //                         ))}
+  //                       </ul>
+  //                     </div>
+
+  //                     <div className="ai-recommend__card">
+  //                       <div className="ai-recommend__card-label">适合人群</div>
+  //                       <div className="ai-recommend__card-value">
+  //                         {parsedLastAssistantMessage.audience}
+  //                       </div>
+  //                     </div>
+  //                   </div>
+  //                 ) : (
+  //                   <>
+  //                     {item.content}
+  //                     {loading &&
+  //                     item.role === "assistant" &&
+  //                     item.id === lastMessageId ? (
+  //                       <span className="ai-recommend__cursor">|</span>
+  //                     ) : null}
+  //                   </>
+  //                 )}
+  //               </div>
+  //             </div>
+  //           );
+  //         })}
+  //       </div>
+  //     ) : null}
+  //   </div>
+  // );
+  
   return (
     <div className="ai-recommend">
-      <div className="ai-recommend__header">
-        <h2 className="ai-recommend__title">AI 选购助手</h2>
-        <p className="ai-recommend__desc">
-          告诉我你的预算和需求，我会边分析边给出推荐
-        </p>
-      </div>
+      <div className="ai-recommend__content">
+        <div className="ai-recommend__header">
+          <h2 className="ai-recommend__title">AI 选购助手</h2>
+          <p className="ai-recommend__desc">
+            告诉我你的预算和需求，我会边分析边给出推荐
+          </p>
+        </div>
 
-      <div className="ai-recommend__quick-list">
-        {quickQuestions.map((item) => (
-          <button
-            key={item}
-            className="ai-recommend__quick-item"
-            onClick={() => handleClickQuickQuestion(item)}
-            disabled={loading}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
+        {error ? <div className="ai-recommend__error">{error}</div> : null}
 
-      <textarea
-        className="ai-recommend__textarea"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="例如：我预算3000，想买拍照好的手机"
-        rows={4}
-      />
+        {isStopped && !loading ? (
+          <div className="ai-recommend__tips">已停止生成，可继续重新生成。</div>
+        ) : null}
 
-      <div className="ai-recommend__actions">
-        <button
-          className="ai-recommend__button"
-          onClick={() => handleAskAI()}
-          disabled={loading}
-        >
-          {loading ? "分析中..." : "开始推荐"}
-        </button>
-
-        {loading ? (
-          <button
-            className="ai-recommend__button ai-recommend__button--secondary"
-            onClick={handleStop}
-          >
-            停止生成
-          </button>
-        ) : messages.length > 0 ? (
-          <button
-            className="ai-recommend__button ai-recommend__button--secondary"
-            onClick={handleRegenerate}
-          >
-            重新生成
-          </button>
+        {!loading && !error && messages.length === 0 ? (
+          <div className="ai-recommend__empty">
+            你可以输入预算、用途、品牌偏好等信息，例如“预算4000，偏向拍照和轻薄”
+          </div>
         ) : null}
 
         {messages.length > 0 ? (
-          <button
-            className="ai-recommend__button ai-recommend__button--secondary"
-            onClick={handleClearMessages}
-          >
-            清空会话
-          </button>
+          <div className="ai-recommend__message-list">
+            {messages.map((item) => {
+              const isLastAssistantMessage =
+                item.role === "assistant" && item.id === lastMessageId;
+
+              const shouldRenderAsCard =
+                isLastAssistantMessage &&
+                !loading &&
+                parsedLastAssistantMessage;
+
+              return (
+                <div
+                  key={item.id}
+                  className={`ai-recommend__message ai-recommend__message--${item.role}`}
+                >
+                  <div className="ai-recommend__message-role">
+                    {item.role === "user" ? "我" : "AI"}
+                  </div>
+
+                  <div className="ai-recommend__message-content">
+                    {shouldRenderAsCard ? (
+                      <div className="ai-recommend__cards">
+                        <div className="ai-recommend__card">
+                          <div className="ai-recommend__card-label">
+                            推荐商品
+                          </div>
+                          <div className="ai-recommend__card-value">
+                            {parsedLastAssistantMessage.product}
+                          </div>
+                        </div>
+
+                        <div className="ai-recommend__card">
+                          <div className="ai-recommend__card-label">
+                            推荐理由
+                          </div>
+                          <ul className="ai-recommend__reason-list">
+                            {parsedLastAssistantMessage.reasons.map(
+                              (reason) => (
+                                <li
+                                  key={reason}
+                                  className="ai-recommend__reason-item"
+                                >
+                                  {reason}
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        </div>
+
+                        <div className="ai-recommend__card">
+                          <div className="ai-recommend__card-label">
+                            适合人群
+                          </div>
+                          <div className="ai-recommend__card-value">
+                            {parsedLastAssistantMessage.audience}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        {item.content}
+                        {loading &&
+                        item.role === "assistant" &&
+                        item.id === lastMessageId ? (
+                          <span className="ai-recommend__cursor">|</span>
+                        ) : null}
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         ) : null}
       </div>
 
-      {error ? <div className="ai-recommend__error">{error}</div> : null}
-
-      {isStopped && !loading ? (
-        <div className="ai-recommend__tips">已停止生成，可继续重新生成。</div>
-      ) : null}
-
-      {!loading && !error && messages.length === 0 ? (
-        <div className="ai-recommend__empty">
-          你可以输入预算、用途、品牌偏好等信息，例如“预算4000，偏向拍照和轻薄”
+      <div className="ai-recommend__footer">
+        <div className="ai-recommend__quick-list">
+          {quickQuestions.map((item) => (
+            <button
+              key={item}
+              className="ai-recommend__quick-item"
+              onClick={() => handleClickQuickQuestion(item)}
+              disabled={loading}
+            >
+              {item}
+            </button>
+          ))}
         </div>
-      ) : null}
 
-      {messages.length > 0 ? (
-        <div className="ai-recommend__message-list">
-          {messages.map((item) => {
-            const isLastAssistantMessage =
-              item.role === "assistant" && item.id === lastMessageId;
+        <textarea
+          className="ai-recommend__textarea"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="例如：我预算3000，想买拍照好的手机"
+          rows={4}
+        />
 
-            const shouldRenderAsCard =
-              isLastAssistantMessage && !loading && parsedLastAssistantMessage;
+        <div className="ai-recommend__actions">
+          <button
+            className="ai-recommend__button"
+            onClick={() => handleAskAI()}
+            disabled={loading}
+          >
+            {loading ? "分析中..." : "开始推荐"}
+          </button>
 
-            return (
-              <div
-                key={item.id}
-                className={`ai-recommend__message ai-recommend__message--${item.role}`}
-              >
-                <div className="ai-recommend__message-role">
-                  {item.role === "user" ? "我" : "AI"}
-                </div>
+          {loading ? (
+            <button
+              className="ai-recommend__button ai-recommend__button--secondary"
+              onClick={handleStop}
+            >
+              停止生成
+            </button>
+          ) : messages.length > 0 ? (
+            <button
+              className="ai-recommend__button ai-recommend__button--secondary"
+              onClick={handleRegenerate}
+            >
+              重新生成
+            </button>
+          ) : null}
 
-                <div className="ai-recommend__message-content">
-                  {shouldRenderAsCard ? (
-                    <div className="ai-recommend__cards">
-                      <div className="ai-recommend__card">
-                        <div className="ai-recommend__card-label">推荐商品</div>
-                        <div className="ai-recommend__card-value">
-                          {parsedLastAssistantMessage.product}
-                        </div>
-                      </div>
-
-                      <div className="ai-recommend__card">
-                        <div className="ai-recommend__card-label">推荐理由</div>
-                        <ul className="ai-recommend__reason-list">
-                          {parsedLastAssistantMessage.reasons.map((reason) => (
-                            <li
-                              key={reason}
-                              className="ai-recommend__reason-item"
-                            >
-                              {reason}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="ai-recommend__card">
-                        <div className="ai-recommend__card-label">适合人群</div>
-                        <div className="ai-recommend__card-value">
-                          {parsedLastAssistantMessage.audience}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      {item.content}
-                      {loading &&
-                      item.role === "assistant" &&
-                      item.id === lastMessageId ? (
-                        <span className="ai-recommend__cursor">|</span>
-                      ) : null}
-                    </>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {messages.length > 0 ? (
+            <button
+              className="ai-recommend__button ai-recommend__button--secondary"
+              onClick={handleClearMessages}
+            >
+              清空会话
+            </button>
+          ) : null}
         </div>
-      ) : null}
+      </div>
     </div>
   );
 }
